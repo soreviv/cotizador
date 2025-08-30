@@ -1,0 +1,5 @@
+# Dependencias manejadas por scripts
+/tcpdf/
+
+# Archivos de configuración local (si se usaran en el futuro)
+.env

@@ -1,6 +1,6 @@
 # Cotizador de Auxiliares Auditivos
 
-Este es un sistema web simple para generar cotizaciones en formato PDF para auxiliares auditivos, desarrollado para el Dr. Alejandro Viveros.
+Este es un sistema web simple para generar cotizaciones en formato PDF para auxiliares auditivos, desarrollado para el Dr. Alejandro Viveros®.
 
 ## Características
 
@@ -43,7 +43,7 @@ server {
     listen 80;
     server_name cotizador.otorrinonet.com;
 
-    root /var/www/html/cotizador; # Asegúrate de que esta sea la ruta correcta
+    root /var/www/otorrinonet.com/cotizador; # Asegúrate de que esta sea la ruta correcta
     index index.php;
 
     location / {

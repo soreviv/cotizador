@@ -125,7 +125,7 @@ $pdf->MultiCell(0, 5, "• Precios en MXN, incluyen IVA y adaptación personaliz
 $pdf->SetY(-30);
 $pdf->SetFont('helvetica', 'I', 8);
 $pdf->SetTextColor(100, 100, 100);
-$pdf->Cell(0, 5, 'Dr. Alejandro Viveros Domínguez | Buenavista 20, Lindavista, CDMX', 0, 1, 'C');
+$pdf->Cell(0, 5, 'Dr. Alejandro Viveros Domínguez® | Buenavista 20, Lindavista, CDMX', 0, 1, 'C');
 $pdf->Cell(0, 5, 'Tel: 55 1951 0312 | Email: drviveros@otorrinonet.com | Web: www.otorrinonet.com', 0, 1, 'C');
 
 // Salida

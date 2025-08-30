@@ -1,0 +1,133 @@
+<?php
+session_start();
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header('Location: login.php');
+    exit;
+}
+require_once('tcpdf/tcpdf.php');
+
+// Obtener datos del formulario
+$cliente = $_POST['cliente'];
+$telefono = $_POST['telefono'];
+$correo = $_POST['correo'];
+$modelo = $_POST['modelo'];
+$marca = $_POST['marca'];
+$tipo = $_POST['tipo'];
+$alimentacion = $_POST['alimentacion'];
+$cargador = $_POST['cargador'] == 'Sí' ? 'Sí (costo adicional)' : 'No';
+$precio = number_format($_POST['precio'], 2);
+$total = $precio;
+
+// Calcular folio: Año-Mes-Número aleatorio
+$folio = date('Y') . '-' . date('m') . '-' . rand(100, 999);
+$fecha = date('d/m/Y');
+
+// Crear PDF
+$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+$pdf->SetCreator('Dr. Alejandro Viveros');
+$pdf->SetAuthor('Dr. Alejandro Viveros');
+$pdf->SetTitle('Cotización Auxiliares Auditivos');
+$pdf->setPrintHeader(false);
+$pdf->setPrintFooter(false);
+$pdf->AddPage();
+
+// Estilos
+$azul = '#1E5B8B';
+$verde = '#A4B66E';
+$naranja = '#F28C28';
+
+// Logo
+$logo_path = 'logo/logo.png';
+if (file_exists($logo_path)) {
+    $pdf->Image($logo_path, 15, 10, 40, 0, 'PNG');
+}
+
+// Título
+$pdf->SetFont('helvetica', 'B', 18);
+$pdf->SetTextColorArray([$azul]);
+$pdf->SetX(60);
+$pdf->Cell(0, 10, 'COTIZACIÓN DE AUXILIARES AUDITIVOS', 0, 1, 'L');
+
+// Datos del Dr.
+$pdf->SetFont('helvetica', '', 10);
+$pdf->SetTextColor(0, 0, 0);
+$pdf->SetX(60);
+$pdf->Cell(0, 5, 'Dr. Alejandro Viveros Domínguez', 0, 1, 'L');
+$pdf->SetX(60);
+$pdf->Cell(0, 5, 'Especialista en Audiología y Otología', 0, 1, 'L');
+$pdf->SetX(60);
+$pdf->Cell(0, 5, 'RFC: VIDA851218DQ8', 0, 1, 'L');
+
+// Línea separadora
+$pdf->SetDrawColorArray([$naranja]);
+$pdf->SetLineWidth(0.5);
+$pdf->Line(15, 42, 200, 42);
+
+// Información general
+$pdf->SetXY(15, 45);
+$pdf->SetFont('helvetica', 'B', 11);
+$pdf->SetTextColorArray([$azul]);
+$pdf->Cell(0, 6, 'DATOS DEL CLIENTE', 0, 1);
+$pdf->SetFont('helvetica', '', 10);
+$pdf->SetTextColor(0, 0, 0);
+$pdf->Cell(50, 6, 'Cliente:', 0, 0); $pdf->Cell(0, 6, $cliente, 0, 1);
+$pdf->Cell(50, 6, 'Teléfono:', 0, 0); $pdf->Cell(0, 6, $telefono, 0, 1);
+$pdf->Cell(50, 6, 'Correo:', 0, 0); $pdf->Cell(0, 6, $correo, 0, 1);
+$pdf->Cell(50, 6, 'Folio:', 0, 0); $pdf->Cell(0, 6, $folio, 0, 1);
+$pdf->Cell(50, 6, 'Fecha:', 0, 0); $pdf->Cell(0, 6, $fecha, 0, 1);
+
+// Tabla de producto
+$pdf->SetY(85);
+$pdf->SetFont('helvetica', 'B', 11);
+$pdf->SetFillColorArray([$verde]);
+$pdf->SetTextColor(255, 255, 255);
+$pdf->Cell(30, 8, 'No.', 1, 0, 'C', true);
+$pdf->Cell(40, 8, 'Modelo', 1, 0, 'C', true);
+$pdf->Cell(25, 8, 'Marca', 1, 0, 'C', true);
+$pdf->Cell(30, 8, 'Tipo', 1, 0, 'C', true);
+$pdf->Cell(30, 8, 'Alimentación', 1, 0, 'C', true);
+$pdf->Cell(30, 8, 'Precio', 1, 1, 'C', true);
+
+$pdf->SetFont('helvetica', '', 10);
+$pdf->SetTextColor(0, 0, 0);
+$pdf->Cell(30, 8, '1', 1, 0, 'C');
+$pdf->Cell(40, 8, $modelo, 1, 0, 'C');
+$pdf->Cell(25, 8, $marca, 1, 0, 'C');
+$pdf->Cell(30, 8, $tipo, 1, 0, 'C');
+$pdf->Cell(30, 8, $alimentacion, 1, 0, 'C');
+$pdf->Cell(30, 8, '$' . $precio, 1, 1, 'C');
+
+if ($cargador == 'Sí (costo adicional)') {
+    $pdf->Cell(30, 8, '', 1, 0, 'C');
+    $pdf->Cell(40, 8, 'Cargador', 1, 0, 'C');
+    $pdf->Cell(25, 8, $marca, 1, 0, 'C');
+    $pdf->Cell(30, 8, '-', 1, 0, 'C');
+    $pdf->Cell(30, 8, 'Recargable', 1, 0, 'C');
+    $pdf->Cell(30, 8, 'Costo adicional', 1, 1, 'C');
+}
+
+// Total
+$pdf->SetY($pdf->GetY() + 5);
+$pdf->SetFont('helvetica', 'B', 11);
+$pdf->Cell(155, 8, 'Total (MXN)', 1, 0, 'C', true);
+$pdf->Cell(30, 8, '$' . $total, 1, 1, 'C', true);
+
+// Condiciones
+$pdf->SetY($pdf->GetY() + 10);
+$pdf->SetFont('helvetica', 'B', 11);
+$pdf->SetTextColorArray([$azul]);
+$pdf->Cell(0, 8, 'CONDICIONES COMERCIALES', 0, 1);
+$pdf->SetFont('helvetica', '', 9);
+$pdf->SetTextColor(0, 0, 0);
+$pdf->MultiCell(0, 5, "• Precios en MXN, incluyen IVA y adaptación personalizada.\n• Validez: Hasta el 30 del mes en curso.\n• Formas de pago: Contado o tarjeta de crédito (hasta 24 meses sin intereses).\n• Garantía: De 1 a 2 años según fabricante y modelo. No cubre mal uso ni fallas electrónicas por manipulación inadecuada.\n• Entrega en consulta (Lindavista, CDMX).", 0, 'L');
+
+// Pie de página
+$pdf->SetY(-30);
+$pdf->SetFont('helvetica', 'I', 8);
+$pdf->SetTextColor(100, 100, 100);
+$pdf->Cell(0, 5, 'Dr. Alejandro Viveros Domínguez | Buenavista 20, Lindavista, CDMX', 0, 1, 'C');
+$pdf->Cell(0, 5, 'Tel: 55 1951 0312 | Email: drviveros@otorrinonet.com | Web: www.otorrinonet.com', 0, 1, 'C');
+
+// Salida
+$pdf->Output('Cotizacion_' . $cliente . '_' . date('Ymd') . '.pdf', 'I');
+?>

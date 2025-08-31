@@ -27,7 +27,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
   <div class="container">
     <div style="text-align: right; margin-bottom: 15px;"><a href="logout.php" style="text-decoration: none; background: #F28C28; color: white; padding: 8px 15px; border-radius: 4px; font-size: 14px;">Cerrar Sesión</a></div>
     <h1>Cotización de Auxiliares Auditivos</h1>
-    <form action="generar_php" method="post" target="_blank">
+    <form action="generar.php" method="post" target="_blank">
       <label>Nombre del Cliente:</label>
       <input type="text" name="cliente" required />
 
